@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReviewModel {
     private String review;
-    private Long institutionModel;
+    private Long institutionId;
     private Long userId;
 }
