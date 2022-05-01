@@ -12,7 +12,6 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@Builder
 public class UserRole extends BaseEntity {
 
     @Column(name = "role_name")
