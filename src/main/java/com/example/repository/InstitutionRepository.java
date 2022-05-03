@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface InstitutionRepository extends JpaRepository<Institution, Long>, JpaSpecificationExecutor<Institution> {
-    Optional<Institution> findInstitutionId(Long id, Pageable pageable);
-    Page<Institution> findAllByCategoryId(Long id);
-    List<Institution> findInstitutionId(String name);
+//    Optional<Institution> findInstitutionId(Long id, Pageable pageable);
+//    Page<Institution> findAllByCategoryId(Long id);
+//    List<Institution> findInstitutionName(String name);
 }
