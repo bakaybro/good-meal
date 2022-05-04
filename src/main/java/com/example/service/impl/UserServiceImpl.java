@@ -3,16 +3,20 @@ package com.example.service.impl;
 import com.example.converter.UserConverter;
 import com.example.entity.User;
 import com.example.exceptions.ApiException;
+import com.example.model.UserAuthModel;
 import com.example.model.UserModel;
 import com.example.repository.UserRepository;
 import com.example.service.UserService;
+import com.example.util.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -89,5 +93,21 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.getByLogin(login).orElse(null);
         if (user == null) throw new ApiException("There is no such user", HttpStatus.BAD_REQUEST);
         return user;
+    }
+
+    @Override
+    public ResponseMessage<String> getBasicAuthHeaderByAuthModel(UserAuthModel userAuthModel) {
+        User user = userRepository.getByLogin(userAuthModel.getLogin())
+                .orElseThrow( () -> new ApiException("The login is incorrect", HttpStatus.BAD_REQUEST));
+
+        String encryptedPasswordDatabase = user.getPassword();
+        boolean isPasswordCorrect = passwordEncoder.matches(userAuthModel.getPassword(), encryptedPasswordDatabase);
+        if (!isPasswordCorrect) throw new ApiException("The password is incorrect", HttpStatus.BAD_REQUEST);
+
+        String loginAndPassword = userAuthModel.getLogin() + " : " + userAuthModel.getPassword();
+        String authorizationHeader = new String(Base64.getEncoder().encode(loginAndPassword.getBytes()));
+        ResponseMessage<String> responseMessage = new ResponseMessage<>();
+
+        return responseMessage.prepareSuccessMessage(authorizationHeader);
     }
 }

@@ -11,5 +11,30 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ResponseMessage<T> {
     private T value;
+    private String status;
     private String message;
+
+    public ResponseMessage<T> prepareSuccessMessage(T value){
+        return ResponseMessage.<T>builder()
+                .value(value)
+                .message(null)
+                .status("OK")
+                .build();
+    }
+
+    public ResponseMessage<T> prepareFailMessage(T value){
+        return ResponseMessage.<T>builder()
+                .value(value)
+                .message(null)
+                .status("FAIL")
+                .build();
+    }
+
+    public ResponseMessage<T> prepareErrorMessage(T value){
+        return ResponseMessage.<T>builder()
+                .value(value)
+                .message(null)
+                .status("ERROR")
+                .build();
+    }
 }

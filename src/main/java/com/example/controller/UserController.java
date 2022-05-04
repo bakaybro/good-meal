@@ -1,9 +1,11 @@
 package com.example.controller;
 
 import com.example.entity.User;
+import com.example.model.UserAuthModel;
 import com.example.model.UserModel;
 import com.example.repository.UserRepository;
 import com.example.service.UserService;
+import com.example.util.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +49,10 @@ public class UserController {
     @GetMapping("/get-current")
     public User getCurrent() {
         return userService.getCurrentUser();
+    }
+
+    @PostMapping("/sign-in")
+    public ResponseMessage<String> getAuthHeader(@RequestBody UserAuthModel userAuthModel) {
+        return userService.getBasicAuthHeaderByAuthModel(userAuthModel);
     }
 }
