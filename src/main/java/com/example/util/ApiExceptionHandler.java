@@ -14,6 +14,8 @@ public class ApiExceptionHandler {
     public ResponseEntity<ResponseMessage<String>> handleFailException(ApiException apiException) {
         ResponseMessage<String> exceptionResponseMessage = new ResponseMessage<>();
         exceptionResponseMessage.setMessage(apiException.getMessage());
+        exceptionResponseMessage.setValue(apiException.toString());
+        exceptionResponseMessage.setStatus(apiException.getHttpStatus().toString());
         String threwClassName = apiException.getStackTrace()[0].getClassName();
         log.warn(threwClassName + " : " + apiException.getMessage());
         return new ResponseEntity<>(exceptionResponseMessage, apiException.getHttpStatus());

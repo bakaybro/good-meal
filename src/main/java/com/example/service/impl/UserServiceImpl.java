@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel getById(Long id) {
         UserModel userModel = userConverter.convertFromEntity(userRepository.findById(id).orElse(null));
-        if (userModel == null) throw new ApiException("Didn't find a client under id", HttpStatus.BAD_REQUEST);
+        if (userModel == null) throw new ApiException("Didn't find a user under id: " + id, HttpStatus.BAD_REQUEST);
         return userModel;
     }
 
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
     public User getCurrentUser() {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.getByLogin(login).orElse(null);
-        if (user == null) throw new ApiException("There is no such user", HttpStatus.BAD_REQUEST);
+        if (user == null) throw new ApiException("There is no such USER", HttpStatus.BAD_REQUEST);
         return user;
     }
 
