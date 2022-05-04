@@ -8,4 +8,8 @@ import java.util.List;
 public interface UserService {
     UserModel createUser(UserModel userModel);
     List<User> getAll();
+    UserModel getById(Long id);
+    UserModel update(Long id, UserModel userModel);
+    UserModel deleteById(Long id);
+    User getCurrentUser();
 }

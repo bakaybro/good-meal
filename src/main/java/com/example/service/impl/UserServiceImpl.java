@@ -8,9 +8,11 @@ import com.example.repository.UserRepository;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,5 +55,39 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public UserModel getById(Long id) {
+        UserModel userModel = userConverter.convertFromEntity(userRepository.findById(id).orElse(null));
+        if (userModel == null) throw new ApiException("Didn't find a client under id", HttpStatus.BAD_REQUEST);
+        return userModel;
+    }
+
+    @Override
+    public UserModel update(Long id, UserModel userModel) {
+        User userForUpdate = userConverter.convertFromModel(userModel);
+        userForUpdate.setId(id);
+        String encodedPassword = passwordEncoder.encode(userModel.getPassword());
+        userForUpdate.setPassword(encodedPassword);
+        userRepository.save(userForUpdate);
+        return userConverter.convertFromEntity(userForUpdate);
+    }
+
+    @Override
+    public UserModel deleteById(Long id) {
+        UserModel userModelForDelete = getById(id);
+        if (userModelForDelete == null) throw new ApiException("Did not find the client under the id to delete", HttpStatus.BAD_REQUEST);
+        else userRepository.delete(userConverter.convertFromModel(userModelForDelete));
+
+        return userModelForDelete;
+    }
+
+    @Override
+    public User getCurrentUser() {
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.getByLogin(login).orElse(null);
+        if (user == null) throw new ApiException("There is no such user", HttpStatus.BAD_REQUEST);
+        return user;
     }
 }
