@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public UserModel deleteById(@PathVariable("id") Long id) {
+    public UserModel deleteById(@PathVariable Long id) {
         return userService.deleteById(id);
     }
 

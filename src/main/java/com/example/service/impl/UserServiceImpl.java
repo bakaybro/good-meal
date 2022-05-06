@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,20 +72,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel update(Long id, UserModel userModel) {
         User userForUpdate = userConverter.convertFromModel(userModel);
+
         userForUpdate.setId(id);
         String encodedPassword = passwordEncoder.encode(userModel.getPassword());
         userForUpdate.setPassword(encodedPassword);
         userRepository.save(userForUpdate);
         return userConverter.convertFromEntity(userForUpdate);
+
     }
 
     @Override
     public UserModel deleteById(Long id) {
-        UserModel userModelForDelete = getById(id);
-        if (userModelForDelete == null) throw new ApiException("Did not find the client under the id to delete", HttpStatus.BAD_REQUEST);
-        else userRepository.delete(userConverter.convertFromModel(userModelForDelete));
+        UserModel userModelForUpdate = userConverter.convertFromEntity(userRepository.findById(id)
+                .orElseThrow( () -> new ApiException("Did not find the USER under the id to delete. ID: " + id, HttpStatus.BAD_REQUEST)));
 
-        return userModelForDelete;
+        userRepository.deleteById(id);
+        return userModelForUpdate;
     }
 
     @Override
