@@ -56,8 +56,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryModel deleteById(Long id) {
-        CategoryModel categoryModelForDelete = getById(id);
-        if (categoryModelForDelete != null) categoryRepository.delete(categoryConverter.convertFromModel(categoryModelForDelete));
+        CategoryModel categoryModelForDelete = categoryConverter.convertFromEntity(categoryRepository.findById(id)
+                .orElseThrow( () -> new ApiException("Did not find the category under the id to delete. ID: " + id, HttpStatus.BAD_REQUEST)));
+
+        categoryRepository.deleteById(id);
         return categoryModelForDelete;
     }
 }
