@@ -2,9 +2,11 @@ package com.example.service.impl;
 
 import com.example.converter.UserConverter;
 import com.example.entity.User;
+import com.example.entity.UserRole;
 import com.example.exceptions.ApiException;
 import com.example.model.UserAuthModel;
 import com.example.model.UserModel;
+import com.example.model.UserRoleModel;
 import com.example.repository.UserRepository;
 import com.example.service.UserService;
 import com.example.util.ResponseMessage;
@@ -58,8 +60,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserModel> getAll() {
+        List<UserModel> userModels = new ArrayList<>();
+        for (User user : userRepository.findAll()) {
+            userModels.add(userConverter.convertFromEntity(user));
+        }
+        if (userModels.isEmpty()) throw new ApiException("List is empty", HttpStatus.BAD_REQUEST);
+        return userModels;
     }
 
     @Override
