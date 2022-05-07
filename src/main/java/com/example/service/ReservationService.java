@@ -7,7 +7,7 @@ import java.util.List;
 public interface ReservationService {
     ReservationModel create(ReservationModel reservationModel);
     ReservationModel getById(Long id);
-    List<ReservationModel> gerAll();
+    List<ReservationModel> getAll();
     ReservationModel update(ReservationModel reservationModel);
     ReservationModel deleteById(Long id);
 }
