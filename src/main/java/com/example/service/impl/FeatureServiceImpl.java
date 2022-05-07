@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,21 +49,37 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Override
     public FeatureModel getById(Long id) {
-        return null;
+        return featureConverter.convertFromEntity(featureRepository.findById(id)
+                .orElseThrow( () -> new ApiException("Didn't find a FEATURE under id: " + id, HttpStatus.BAD_REQUEST)));
     }
 
     @Override
     public FeatureModel update(FeatureModel featureModel) {
-        return null;
+        FeatureModel featureModelUpdate = getById(featureConverter.convertFromModel(featureModel).getId());
+
+        if (featureModel.getFeature() != null) featureModelUpdate.setFeature(featureModel.getFeature());
+        if (featureModel.getInstitutionId() != null) featureModelUpdate.setInstitutionId(featureModel.getInstitutionId());
+        featureRepository.save(featureConverter.convertFromModel(featureModelUpdate));
+        return featureModelUpdate;
     }
 
     @Override
     public FeatureModel deleteById(Long id) {
-        return null;
+        FeatureModel featureModelDelete = featureConverter.convertFromEntity(featureRepository.findById(id)
+                .orElseThrow( () -> new ApiException("Did not find the feature under the id to delete. ID: " + id, HttpStatus.BAD_REQUEST)));
+
+        featureRepository.deleteById(id);
+        return featureModelDelete;
     }
 
     @Override
     public List<FeatureModel> getAll() {
-        return null;
+        List<FeatureModel> featureModels = new ArrayList<>();
+        for (Feature feature : featureRepository.findAll()) {
+            featureModels.add(featureConverter.convertFromEntity(feature));
+        }
+
+        if (featureModels.isEmpty()) throw new ApiException("List is empty", HttpStatus.BAD_REQUEST);
+        return featureModels;
     }
 }
