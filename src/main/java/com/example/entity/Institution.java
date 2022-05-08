@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Table(name = "places")
+@Table(name = "institutions")
 @Entity
 @Getter
 @Setter

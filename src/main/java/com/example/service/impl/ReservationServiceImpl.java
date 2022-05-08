@@ -33,13 +33,13 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservationModel.getBookingTimeFrom() == null) throw new ApiException("Enter the reservation time from", HttpStatus.BAD_REQUEST);
         if (reservationModel.getBookingTimeTill() == null) throw new ApiException("Enter the reservation time before", HttpStatus.BAD_REQUEST);
         if (reservationModel.getTableId() == null) throw new ApiException("Enter a table", HttpStatus.BAD_REQUEST);
-        List<Reservation> reservations = reservationRepository.findby(reservationModel.getTableId());
-        for (Reservation reservation : reservations) {
-            Reservation reservationFromClient = reservationConverter.convertFromModel(reservationModel);
-            if (reservation.getReservationTimeFrom().isEqual(reservationFromClient.getReservationTimeFrom())
-                    || reservation.getReservationTimeTill().isEqual(reservationFromClient.getReservationTimeTill()))
-                    throw new ApiException("There is already a reservation for this time", HttpStatus.BAD_REQUEST);
-        }
+//        List<Reservation> reservations = reservationRepository.findby(reservationModel.getTableId());
+//        for (Reservation reservation : reservations) {
+//            Reservation reservationFromClient = reservationConverter.convertFromModel(reservationModel);
+//            if (reservation.getReservationTimeFrom().isEqual(reservationFromClient.getReservationTimeFrom())
+//                    || reservation.getReservationTimeTill().isEqual(reservationFromClient.getReservationTimeTill()))
+//                    throw new ApiException("There is already a reservation for this time", HttpStatus.BAD_REQUEST);
+//        }
         reservationModel.setUserId(userService.getCurrentUser().getId());
         reservationRepository.save(reservationConverter.convertFromModel(reservationModel));
         return reservationModel;

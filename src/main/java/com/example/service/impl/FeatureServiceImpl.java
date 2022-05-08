@@ -9,6 +9,8 @@ import com.example.repository.InstitutionRepository;
 import com.example.service.FeatureService;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -81,5 +83,10 @@ public class FeatureServiceImpl implements FeatureService {
 
         if (featureModels.isEmpty()) throw new ApiException("List is empty", HttpStatus.BAD_REQUEST);
         return featureModels;
+    }
+
+    @Override
+    public Page<FeatureModel> getPage(Pageable pageable) {
+        return null;
     }
 }

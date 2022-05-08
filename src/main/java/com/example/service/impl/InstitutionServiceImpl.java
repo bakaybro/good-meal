@@ -10,8 +10,11 @@ import com.example.repository.InstitutionRepository;
 import com.example.service.InstitutionService;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +39,10 @@ public class InstitutionServiceImpl implements InstitutionService {
         if (institutionModel.getEndOfWorkIn() == null) throw new ApiException("Enter the working time before", HttpStatus.BAD_REQUEST);
         if (institutionModel.getCategoryId() == null) throw new ApiException("Enter the category", HttpStatus.BAD_REQUEST);
 
-//        List<Institution> institutions = institutionRepository.findBy(institutionModel.getName());
-//        for (Institution institution : institutions) {
-//            if (institution.getAddress().equals(institutionModel.getAddress())) throw new ApiException("At this address already exists", HttpStatus.BAD_REQUEST);
-//        }
+        List<Institution> institutions = institutionRepository.findInstitutionByName(institutionModel.getName());
+        for (Institution institution : institutions) {
+            if (institution.getAddress().equals(institutionModel.getAddress())) throw new ApiException("At this address already exists", HttpStatus.BAD_REQUEST);
+        }
         institutionModel.setUserId(userService.getCurrentUser().getId());
         institutionRepository.save(institutionConverter.convertFromModel(institutionModel));
         return institutionModel;
@@ -82,5 +85,25 @@ public class InstitutionServiceImpl implements InstitutionService {
         }
         if (institutionModels.isEmpty()) throw new ApiException("List is empty", HttpStatus.BAD_REQUEST);
         return institutionModels;
+    }
+
+    @Override
+    public Page<InstitutionModel> getPage(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<InstitutionModel> getPageSortedByCategory(Long id, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<InstitutionModel> getSortedPage(InstitutionModel institutionModel, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public ApiException saveImages(List<MultipartFile> images, Long institutionId) {
+        return null;
     }
 }

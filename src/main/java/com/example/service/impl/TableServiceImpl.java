@@ -39,9 +39,9 @@ public class TableServiceImpl implements TableReservationService {
         Institution institution = institutionRepository.findInstitutionId(tableReservationModel.getInstitutionId()).orElse(null);
         if (!institution.getUser().getId().equals(userService.getCurrentUser().getId()))
             throw new ApiException("You cannot make changes to this institution", HttpStatus.BAD_REQUEST);;
-        List<TableReservation> establishmentTables = institutionRepository.findInstitutionName(tableReservationModel.getInstitutionId());
-        for (TableReservation establishmentTable:establishmentTables) {
-            if (tableReservationModel.getTableNumber().equals(establishmentTable.getTableNumber()))
+        List<TableReservation> tableReservations = tableReservationRepository.findTableByInstitutionId(tableReservationModel.getInstitutionId());
+        for (TableReservation tableReservation : tableReservations) {
+            if (tableReservationModel.getTableNumber().equals(tableReservation.getTableNumber()))
                 throw new ApiException("Such a table with such a number already exists: " + tableReservationModel.getTableNumber(), HttpStatus.BAD_REQUEST);
         }
         tableReservationRepository.save(tableReservationConverter.convertFromModel(tableReservationModel));
