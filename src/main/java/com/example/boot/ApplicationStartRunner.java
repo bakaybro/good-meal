@@ -13,29 +13,22 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ApplicationStartRunner implements CommandLineRunner {
 
-    @Autowired(required = false)
+    @Autowired
     UserRoleService userRoleService;
 
-    @Autowired(required = false)
+    @Autowired
     UserService userService;
 
     @Override
     public void run(String... args) throws Exception {
-//        UserRoleModel clientRole = new UserRoleModel();
-//        clientRole.setRoleName("ROLE_CLIENT");
-//        userRoleService.create(clientRole);
-//
 //        UserRoleModel adminRole = new UserRoleModel();
 //        adminRole.setRoleName("ROLE_ADMIN");
 //        userRoleService.create(adminRole);
 //
-//        UserModel admin = new UserModel();
-//        admin.setLogin("admin");
-//        admin.setPassword("admin1717");
-//        admin.setEmail("admin@gmail.com");
-//        admin.setIsActive(1L);
-//        admin.setRoleId(1L);
-//        userService.createUser(admin);
+//        UserRoleModel clientRole = new UserRoleModel();
+//        clientRole.setRoleName("ROLE_CLIENT");
+//        userRoleService.create(clientRole);
+
 
     }
 }

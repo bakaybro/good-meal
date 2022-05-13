@@ -5,10 +5,15 @@ import com.example.entity.Category;
 import com.example.entity.Institution;
 import com.example.exceptions.ApiException;
 import com.example.model.CategoryModel;
+import com.example.model.ImageModel;
+import com.example.model.InstitutionImageModel;
 import com.example.model.InstitutionModel;
 import com.example.repository.InstitutionRepository;
+import com.example.service.ImageService;
+import com.example.service.InstitutionImageService;
 import com.example.service.InstitutionService;
 import com.example.service.UserService;
+import com.example.specification.InstitutionSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,13 +36,20 @@ public class InstitutionServiceImpl implements InstitutionService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ImageService imageService;
+
+    @Autowired
+    private InstitutionImageService institutionImageService;
+
     @Override
     public InstitutionModel create(InstitutionModel institutionModel) {
-        if (institutionModel.getName().isEmpty()) throw new ApiException("Enter the name institution", HttpStatus.BAD_REQUEST);
-        if (institutionModel.getAddress().isEmpty()) throw new ApiException("Enter the address", HttpStatus.BAD_REQUEST);
+        if (institutionModel.getName() == null) throw new ApiException("Enter the name institution", HttpStatus.BAD_REQUEST);
+        if (institutionModel.getAddress() == null) throw new ApiException("Enter the address", HttpStatus.BAD_REQUEST);
         if (institutionModel.getStartedWorkFrom() == null) throw new ApiException("Enter the working time from", HttpStatus.BAD_REQUEST);
         if (institutionModel.getEndOfWorkIn() == null) throw new ApiException("Enter the working time before", HttpStatus.BAD_REQUEST);
         if (institutionModel.getCategoryId() == null) throw new ApiException("Enter the category", HttpStatus.BAD_REQUEST);
+        if (institutionModel.getUserId() == null) throw new ApiException("Enter the users id", HttpStatus.BAD_REQUEST);
 
         List<Institution> institutions = institutionRepository.findInstitutionByName(institutionModel.getName());
         for (Institution institution : institutions) {
@@ -89,21 +101,39 @@ public class InstitutionServiceImpl implements InstitutionService {
 
     @Override
     public Page<InstitutionModel> getPage(Pageable pageable) {
-        return null;
+        Page<Institution> institutionPage = institutionRepository.findAll(pageable);
+        if (institutionPage.getContent().isEmpty()) throw new ApiException("List is empty", HttpStatus.BAD_REQUEST);
+        return institutionPage.map(institutionConverter::convertFromEntity);
     }
 
     @Override
     public Page<InstitutionModel> getPageSortedByCategory(Long id, Pageable pageable) {
-        return null;
+        Page<Institution> institutionPage = institutionRepository.findAllByCategoryId(id, pageable);
+        if (institutionPage.getContent().isEmpty()) throw new ApiException("List is empty", HttpStatus.BAD_REQUEST);
+        return institutionPage.map(institutionConverter::convertFromEntity);
     }
 
     @Override
     public Page<InstitutionModel> getSortedPage(InstitutionModel institutionModel, Pageable pageable) {
-        return null;
+        InstitutionSpecification institutionSpecification = new InstitutionSpecification(institutionModel);
+        Page<Institution> institutionPage = institutionRepository.findAll(institutionSpecification, pageable);
+        if (institutionPage.getContent().isEmpty()) throw new ApiException("List is empty", HttpStatus.BAD_REQUEST);
+        return institutionPage.map(institutionConverter::convertFromEntity);
     }
 
     @Override
     public ApiException saveImages(List<MultipartFile> images, Long institutionId) {
-        return null;
+        if (institutionId == null) throw new ApiException("Enter a institutions id", HttpStatus.BAD_REQUEST);
+        if (images.isEmpty()) throw new ApiException("There are no images", HttpStatus.BAD_REQUEST);
+
+        for (MultipartFile image : images) {
+            ImageModel imageModel = imageService.saveImage(image);
+            InstitutionImageModel institutionImageModel = new InstitutionImageModel();
+            institutionImageModel.setImageId(imageModel.getId());
+            institutionImageModel.setInstitutionId(institutionId);
+
+            institutionImageService.create(institutionImageModel);
+        }
+        return new ApiException("Everything was saved successfully! :)", HttpStatus.BAD_REQUEST);
     }
 }

@@ -35,7 +35,7 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Override
     public FeatureModel create(FeatureModel featureModel) {
-        if (featureModel.getFeature().isEmpty()) throw new ApiException("Enter a feature", HttpStatus.BAD_REQUEST);
+        if (featureModel.getFeature() == null) throw new ApiException("Enter a feature", HttpStatus.BAD_REQUEST);
         if (featureModel.getInstitutionId() == null) throw new ApiException("Enter the ID of the institution", HttpStatus.BAD_REQUEST);
         if (!Objects.requireNonNull(institutionRepository.findById(featureModel.getInstitutionId())
                 .orElse(null)).getUser().getId().equals(userService.getCurrentUser().getId()))

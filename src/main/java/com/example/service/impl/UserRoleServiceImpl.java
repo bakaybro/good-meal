@@ -3,6 +3,7 @@ package com.example.service.impl;
 import com.example.converter.UserRoleConverter;
 import com.example.entity.UserRole;
 import com.example.exceptions.ApiException;
+import com.example.model.UserModel;
 import com.example.model.UserRoleModel;
 import com.example.repository.UserRoleRepository;
 import com.example.service.UserRoleService;
@@ -48,6 +49,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public UserRoleModel update(Long id, UserRoleModel userRoleModel) {
         UserRole userRoleForUpdate = userRoleConverter.convertFromModel(userRoleModel);
+
         if (userRoleModel != null) userRoleForUpdate.setRoleName(userRoleModel.getRoleName());
         userRoleForUpdate.setId(id);
 
@@ -58,9 +60,10 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public UserRoleModel deleteById(Long id) {
-        UserRoleModel userRoleModelForDelete = getById(id);
-        if (userRoleModelForDelete == null) throw new ApiException("Did not find the ROLE under the id to delete", HttpStatus.BAD_REQUEST);
-        else userRoleRepository.delete(userRoleConverter.convertFromModel(userRoleModelForDelete));
-        return userRoleModelForDelete;
+        UserRoleModel userRoleModelForUpdate = userRoleConverter.convertFromEntity(userRoleRepository.findById(id)
+                .orElseThrow( () -> new ApiException("Did not find the ROLE under the id to delete. ID: " + id, HttpStatus.BAD_REQUEST)));
+
+        userRoleRepository.deleteById(id);
+        return userRoleModelForUpdate;
     }
 }

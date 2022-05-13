@@ -29,9 +29,9 @@ public class CategoryController {
         return categoryService.getAll();
     }
 
-    @PutMapping
-    public CategoryModel update(@RequestBody CategoryModel categoryModel) {
-        return categoryService.update(categoryModel);
+    @PutMapping("/{id}")
+    public CategoryModel update(@PathVariable(value = "id") Long id, @RequestBody CategoryModel categoryModel) {
+        return categoryService.update(id, categoryModel);
     }
 
     @DeleteMapping("/{id}")

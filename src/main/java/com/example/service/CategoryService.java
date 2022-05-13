@@ -8,6 +8,6 @@ public interface CategoryService {
     CategoryModel create(CategoryModel categoryModel);
     CategoryModel getById(Long id);
     List<CategoryModel> getAll();
-    CategoryModel update(CategoryModel categoryModel);
+    CategoryModel update(Long id, CategoryModel categoryModel);
     CategoryModel deleteById(Long id);
 }

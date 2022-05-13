@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 import com.example.converter.CategoryConverter;
 import com.example.entity.Category;
+import com.example.entity.User;
 import com.example.exceptions.ApiException;
 import com.example.model.CategoryModel;
 import com.example.repository.CategoryRepository;
@@ -46,12 +47,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryModel update(CategoryModel categoryModel) {
-        CategoryModel categoryModelForUpdate = getById(categoryConverter.convertFromModel(categoryModel).getId());
+    public CategoryModel update(Long id, CategoryModel categoryModel) {
+        Category categoryForUpdate = categoryConverter.convertFromModel(categoryModel);
 
-        if (categoryModel.getName() != null) categoryModelForUpdate.setName(categoryModel.getName());
-        categoryRepository.save(categoryConverter.convertFromModel(categoryModelForUpdate));
-        return categoryModelForUpdate;
+        categoryForUpdate.setId(id);
+        categoryRepository.save(categoryForUpdate);
+        return categoryConverter.convertFromEntity(categoryForUpdate);
     }
 
     @Override

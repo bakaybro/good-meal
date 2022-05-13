@@ -36,7 +36,7 @@ public class TableServiceImpl implements TableReservationService {
         if (tableReservationModel.getInstitutionId() == null) throw new ApiException("Enter a institution name", HttpStatus.BAD_REQUEST);
         if (tableReservationModel.getTableNumber() == null) throw new ApiException("Enter the number of table", HttpStatus.BAD_REQUEST);
         if (tableReservationModel.getPlace() == null) throw new ApiException("Enter the number of seats", HttpStatus.BAD_REQUEST);
-        Institution institution = institutionRepository.findInstitutionId(tableReservationModel.getInstitutionId()).orElse(null);
+        Institution institution = institutionRepository.findInstitutionById(tableReservationModel.getInstitutionId()).orElse(null);
         if (!institution.getUser().getId().equals(userService.getCurrentUser().getId()))
             throw new ApiException("You cannot make changes to this institution", HttpStatus.BAD_REQUEST);;
         List<TableReservation> tableReservations = tableReservationRepository.findTableByInstitutionId(tableReservationModel.getInstitutionId());
